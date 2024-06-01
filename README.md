@@ -68,3 +68,32 @@ metadata = false
 ```
 
 Try it yourself by pasting it to the bottom of your `config.toml` file! You will see that any fields not included in the preset will be disabled in the GUI. If you encounter any issues with your preset, check the `debug.log` file for details.
+
+## Troubleshooting
+
+On Linux, you may see an error message similar to the following when you try to run the program:
+
+> qt.qpa.plugin: From 6.5.0, xcb-cursor0 or libxcb-cursor0 is needed to load the Qt xcb platform plugin.   
+> qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.   
+> This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
+
+This occurs because certain system libraries required by yt-dlp-gui are not installed if the program is
+installed using `pip` or similar tools.
+
+On Debian- or Ubuntu-based systems, running the following command will usually correct the problem:
+
+```
+sudo apt install libxcb-cursor0
+```
+
+If it doesn't, the Qt documentation provides a [list of recommended packages][qt-x11-packages] to install on
+Debian- and Ubuntu-based systems – try installing those, and see if that resolves the issue.
+
+[qt-x11-packages]: https://doc.qt.io/qt-6/linux-requirements.html
+
+On Fedora or RHEL-based systems, try:
+
+```
+sudo dnf install xcb-util-cursor
+```
+
