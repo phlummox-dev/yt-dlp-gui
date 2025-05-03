@@ -6,7 +6,7 @@ root = Path(__file__).parent
 
 
 def load_toml(path):
-    with open(path, "r", encoding="utf-8") as file:
+    with open(path, encoding="utf-8") as file:
         data = toml.load(file)
     return data
 
