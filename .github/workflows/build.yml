@@ -1,0 +1,133 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+env:
+  QT_QPA_PLATFORM: offscreen
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime:
+          - linux-x64
+          - linux-armv7l
+          - linux-arm64
+          - win-x64
+          - win-arm64
+          - osx-x64
+          - osx-arm64
+        include:
+        - runtime: linux-x64
+          os: ubuntu-latest
+
+        - runtime: linux-armv7l
+          os: ubuntu-latest
+
+        - runtime: linux-arm64
+          os: ubuntu-latest
+
+        - runtime: osx-x64
+          os: macOS-latest
+
+        - runtime: osx-arm64
+          os: macOS-latest
+
+        - runtime: win-x64
+          os: windows-latest
+
+        - runtime: win-arm64
+          os: windows-latest
+
+    runs-on: ${{ matrix.os }}
+    env:
+      VERSION: ""
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Setup uv ${{ matrix.runtime }}
+        uses: astral-sh/setup-uv@v6
+        with:
+          activate-environment: true
+          enable-cache: true
+          cache-suffix: ${{ matrix.runtime }}
+
+      - name: Install dependencies
+        run: |
+          uv sync --no-dev
+
+      - name: Set version windows
+        if: startsWith(matrix.os, 'windows')
+        working-directory: ./app
+        shell: bash
+        run: |
+          version=$(git rev-list --count HEAD)
+          sed -i "s/^__version__.*/__version__ = \"$version\"/" ./app.py
+
+          echo "VERSION=$version" >> $GITHUB_ENV
+
+      - name: Set version macOS
+        if: startsWith(matrix.os, 'macOS')
+        working-directory: ./app
+        shell: bash
+        run: |
+          version=$(git rev-list --count HEAD)
+          sed -i '' "s/^__version__.*/__version__ = \"$version\"/" ./app.py
+
+          echo "VERSION=$version" >> $GITHUB_ENV
+
+      - name: Set version ubuntu
+        if: startsWith(matrix.os, 'ubuntu')
+        working-directory: ./app
+        shell: bash
+        run: |
+          version=$(git rev-list --count HEAD)
+          sed -i "s/^__version__.*/__version__ = \"$version\"/" ./app.py
+
+          echo "VERSION=$version" >> $GITHUB_ENV
+
+      - name: Build application windows
+        if: startsWith(matrix.os, 'windows')
+        working-directory: ./app
+        run: |
+          uv run pyinstaller --name=yt-dlp-gui --clean -y app.py --icon ./ui/assets/yt-dlp-gui.ico --add-data "config.toml;." --noconsole
+          Compress-Archive -Path dist/* -DestinationPath ./yt-dlp-gui-${{ matrix.runtime }}.zip
+
+      - name: Build application ubuntu
+        if: startsWith(matrix.os, 'ubuntu')
+        working-directory: ./app
+        run: |
+          uv run pyinstaller --name=yt-dlp-gui --clean -y app.py --icon ./ui/assets/yt-dlp-gui.ico --add-data "config.toml:." --noconsole
+          zip -r yt-dlp-gui-${{ matrix.runtime }}.zip dist/*
+
+      - name: Build application macOS
+        if: startsWith(matrix.os, 'macOS')
+        working-directory: ./app
+        run: |
+          uv run pyinstaller --name=yt-dlp-gui --clean -y app.py --icon ./ui/assets/yt-dlp-gui.icns --add-data "config.toml:." --noconsole
+          zip -r yt-dlp-gui-${{ matrix.runtime }}.zip dist/*
+
+      - name: Upload artifact ${{ matrix.runtime }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: yt-dlp-gui-${{ matrix.runtime }}-Build-${{ github.run_number }}
+          path: ./app/dist/
+
+      - name: Upload release ${{ matrix.runtime }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: yt-dlp-gui-${{ matrix.runtime }}-Build-${{ github.run_number }}.zip
+          path: ./app/yt-dlp-gui-${{ matrix.runtime }}.zip

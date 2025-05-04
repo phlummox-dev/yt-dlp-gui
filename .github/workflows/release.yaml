@@ -2,10 +2,6 @@ name: Release
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "version"
-        required: false
 
 permissions:
   contents: write
@@ -17,34 +13,38 @@ jobs:
   build-windows:
     name: build-windows
     runs-on: windows-latest
-
+    env:
+      VERSION: ""
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          activate-environment: true
+          enable-cache: true
+          cache-dependency-glob: "**/uv.lock"
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          pip install -U "https://yt-dlp.github.io/Pyinstaller-Builds/x86_64/pyinstaller-6.7.0-py3-none-any.whl"
+          uv sync --no-dev
 
       - name: Set version
         working-directory: ./app
         shell: bash
         run: |
-          if [ -n "${{ github.event.inputs.version }}" ]; then
-            version=${{ github.event.inputs.version }}
-          else
-            version=$(git rev-parse --short HEAD)
-          fi
+          version=$(git rev-list --count HEAD)
           sed -i "s/^__version__.*/__version__ = \"$version\"/" ./app.py
+
+          echo "VERSION=$version" >> $GITHUB_ENV
 
       - name: Build application
         working-directory: ./app
         run: |
-          pyinstaller --name=yt-dlp-gui --clean -y app.py --icon ./ui/assets/yt-dlp-gui.ico --add-data "config.toml;." --noconsole
+          uv run pyinstaller --name=yt-dlp-gui --clean -y app.py --icon ./ui/assets/yt-dlp-gui.ico --add-data "config.toml;." --noconsole
           Compress-Archive -Path dist/* -DestinationPath ./yt-dlp-gui-win64.zip
 
       - uses: actions/upload-artifact@v4
@@ -53,10 +53,9 @@ jobs:
           name: yt-dlp-gui-win64
           path: ./app/dist/
 
-      - uses: softprops/action-gh-release@v2
-        if: ${{ github.event.inputs.version != '' }}
+      - uses: softprops/action-gh-release@vda05d552573ad5aba039eaac05058a918a7bf631 # v2.2.2
         with:
-          tag_name: ${{ github.event.inputs.version }}
+          tag_name: ${{ env.VERSION }}
           generate_release_notes: true
           draft: false
           prerelease: false

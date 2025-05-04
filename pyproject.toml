@@ -9,6 +9,10 @@ dependencies = [
     "requests>=2.32.3",
     "toml==0.10.2",
     "tqdm==4.66.5",
+    # Install pyinstaller from PyPI on non-Windows platforms
+    "pyinstaller==6.13.0 ; sys_platform != 'windows'",
+    # Install pyinstaller from a specific wheel on Windows
+    "pyinstaller @ https://yt-dlp.github.io/Pyinstaller-Builds/x86_64/pyinstaller-6.13.0-py3-none-any.whl ; sys_platform == 'windows'",
 ]
 
 [dependency-groups]
