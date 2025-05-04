@@ -56,9 +56,12 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631 # v2.2.2
         with:
+          name: Release ${{ env.VERSION }}
           tag_name: ${{ env.VERSION }}
           generate_release_notes: true
           draft: false
           prerelease: false
           files: |
             ./app/yt-dlp-gui-win64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
