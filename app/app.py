@@ -53,10 +53,10 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             self,
             "Application Message",
             f"Would you like to remove {item.text(0)} ?",
-            qtw.QMessageBox.StandardButton.Yes | qtw.QMessageBox.StandardButton.No,
-            qtw.QMessageBox.StandardButton.No,
+            qtw.QMessageBox.Yes | qtw.QMessageBox.No,
+            qtw.QMessageBox.No,
         )
-        if ret == qtw.QMessageBox.StandardButton.Yes:
+        if ret == qtw.QMessageBox.Yes:
             if self.to_dl.get(item.id):
                 logger.debug(f"Removing queued download ({item.id}): {item.text(0)}")
                 self.to_dl.pop(item.id)
@@ -112,7 +112,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             item.setTextAlignment(i, qtc.Qt.AlignmentFlag.AlignCenter)
             for i in range(1, 6)
         ]
-        item.setData(0, qtc.Qt.ItemDataRole.UserRole, self.index)
+        item.id = self.index
         self.le_link.clear()
 
         self.to_dl[self.index] = Worker(
@@ -127,10 +127,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             self.cb_thumbnail.isChecked(),
             self.cb_subtitles.isChecked(),
         )
-        logger.info(
-            f"Queue download ({item.data(0, qtc.Qt.ItemDataRole.UserRole)}) "
-            f"added: {self.to_dl[self.index]}"
-        )
+        logger.info(f"Queue download ({item.id}) added: {self.to_dl[self.index]}")
         self.index += 1
 
     def button_clear(self):
