@@ -5,7 +5,6 @@ on:
   pull_request:
   push:
     branches:
-      - master
 
 permissions:
   contents: write
@@ -18,39 +17,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runtime:
-          - linux-x64
-          - linux-armv7l
-          - linux-arm64
-          - win-x64
-          - win-arm64
-          - osx-x64
-          - osx-arm64
-        include:
-        - runtime: linux-x64
-          os: ubuntu-latest
-
-        - runtime: linux-armv7l
-          os: ubuntu-latest
-
-        - runtime: linux-arm64
-          os: ubuntu-latest
-
-        - runtime: osx-x64
-          os: macOS-latest
-
-        - runtime: osx-arm64
-          os: macOS-latest
-
-        - runtime: win-x64
-          os: windows-latest
-
-        - runtime: win-arm64
-          os: windows-latest
+        os: [ubuntu-latest, macOS-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
-    env:
-      VERSION: ""
+
+
     steps:
       - uses: actions/checkout@v4
 
@@ -69,65 +40,39 @@ jobs:
         run: |
           uv sync --no-dev
 
-      - name: Set version windows
-        if: startsWith(matrix.os, 'windows')
-        working-directory: ./app
+      - name: generate metadata module
         shell: bash
         run: |
-          version=$(git rev-list --count HEAD)
-          sed -i "s/^__version__.*/__version__ = \"$version\"/" ./app.py
-
-          echo "VERSION=$version" >> $GITHUB_ENV
-
-      - name: Set version macOS
-        if: startsWith(matrix.os, 'macOS')
-        working-directory: ./app
-        shell: bash
-        run: |
-          version=$(git rev-list --count HEAD)
-          sed -i '' "s/^__version__.*/__version__ = \"$version\"/" ./app.py
-
-          echo "VERSION=$version" >> $GITHUB_ENV
-
-      - name: Set version ubuntu
-        if: startsWith(matrix.os, 'ubuntu')
-        working-directory: ./app
-        shell: bash
-        run: |
-          version=$(git rev-list --count HEAD)
-          sed -i "s/^__version__.*/__version__ = \"$version\"/" ./app.py
-
-          echo "VERSION=$version" >> $GITHUB_ENV
+          # NB: on linux, this is done as part of make docker-build.
+          # but no harm doing it twice.
+          uv run ./scripts/generate_metadata.py
 
       - name: Build application windows
         if: startsWith(matrix.os, 'windows')
-        working-directory: ./app
         run: |
-          uv run pyinstaller --name=yt-dlp-gui --clean -y app.py --icon ./ui/assets/yt-dlp-gui.ico --add-data "config.toml;." --noconsole
+          uv run pyinstaller --clean -y yt-dlp-gui.spec
           Compress-Archive -Path dist/* -DestinationPath ./yt-dlp-gui-${{ matrix.runtime }}.zip
 
       - name: Build application ubuntu
         if: startsWith(matrix.os, 'ubuntu')
-        working-directory: ./app
         run: |
-          uv run pyinstaller --name=yt-dlp-gui --clean -y app.py --icon ./ui/assets/yt-dlp-gui.ico --add-data "config.toml:." --noconsole
-          zip -r yt-dlp-gui-${{ matrix.runtime }}.zip dist/*
+          make docker-image-build
+          make build-linux-exe
 
       - name: Build application macOS
-        if: startsWith(matrix.os, 'macOS')
-        working-directory: ./app
+        if: startsWith(matrix.os, 'mac')
         run: |
-          uv run pyinstaller --name=yt-dlp-gui --clean -y app.py --icon ./ui/assets/yt-dlp-gui.icns --add-data "config.toml:." --noconsole
-          zip -r yt-dlp-gui-${{ matrix.runtime }}.zip dist/*
+          make build-exe
+          zip -r yt-dlp-gui-${{ matrix.os }}.zip dist/*
 
-      - name: Upload artifact ${{ matrix.runtime }}
+      - name: Upload artifact ${{ matrix.os }}
         uses: actions/upload-artifact@v4
         with:
-          name: yt-dlp-gui-${{ matrix.runtime }}-Build-${{ github.run_number }}
-          path: ./app/dist/
+          name: yt-dlp-gui-${{ matrix.os }}-Build-${{ github.run_number }}
+          path: ./dist
 
-      - name: Upload release ${{ matrix.runtime }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: yt-dlp-gui-${{ matrix.runtime }}-Build-${{ github.run_number }}.zip
-          path: ./app/yt-dlp-gui-${{ matrix.runtime }}.zip
+      #- name: Upload release ${{ matrix.os }}
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: yt-dlp-gui-${{ matrix.os }}-Build-${{ github.run_number }}.zip
+      #    path: ./app/yt-dlp-gui-${{ matrix.os }}.zip
