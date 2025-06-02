@@ -10,26 +10,26 @@ Graphical interface for the command line tool [yt-dlp](https://github.com/yt-dlp
 
 There are two ways to get started, depending on your preference and system:
 
-* [`Portable`](#portable) ~ *Windows*
-* [`Manual`](#manual) ~ *Platform independent*
+* [`Portable`](#portable)
+* [`Manual`](#manual)
 
 ### Portable
 
-Download the latest portable version from the the [releases](https://github.com/dsymbol/yt-dlp-gui/releases/latest) section. 
+Download the latest portable version from the [releases](https://github.com/phlummox-dev/yt-dlp-gui/releases/latest) section.
 This is a ZIP file containing the program files and all necessary dependencies.
-
-*All releases are built and released using GitHub Workflow*
 
 ### Manual
 
-You **must** have [Python](https://www.python.org/downloads/) 3.9+ installed.
+You must have [Python](https://www.python.org/downloads/) 3.10+ and Pip (the
+package installer for Python) installed.
 
 ```bash
-git clone https://github.com/dsymbol/yt-dlp-gui
+git clone https://github.com/phlummox-dev/yt-dlp-gui
 cd yt-dlp-gui
-pip install -r requirements.txt
-cd app
-python app.py
+pip install uv
+uv venv
+uv pip install .
+uv run scripts/run.py
 ```
 
 ## Preset Customization
