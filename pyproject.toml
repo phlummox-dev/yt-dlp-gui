@@ -1,10 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "yt-dlp-gui"
 version = "0.1.0"
 description = "A cross-platform GUI wrapper for yt-dlp written in PySide6"
 readme = "README.md"
 requires-python = ">=3.10"
+
 dependencies = [
+    "platformdirs",
     "pyside6==6.9.0",
     "requests>=2.32.3",
     "toml==0.10.2",
@@ -15,12 +21,32 @@ dependencies = [
     "pyinstaller @ https://yt-dlp.github.io/Pyinstaller-Builds/x86_64/pyinstaller-6.13.0-py3-none-any.whl ; sys_platform == 'windows'",
 ]
 
+[project.scripts]
+yt-dlp-gui = "yt_dlp_gui.app:main"
+
+
+# Install these deps with `pip install --group dev`.
+# (Requires pip > ~ 23.1 or so.)
 [dependency-groups]
 dev = [
     "pre-commit>=4.2.0",
     "pyside6-stubs>=6.7.3.0",
     "ruff>=0.11.8",
+    "pylint",
+    "mypy",
 ]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+# list of folders that contain the packages:
+where = ["src"]
+
+# non-python data files to be installed alongside
+# python code; accessible using importlib.resources
+[tool.setuptools.package-data]
+"yt_dlp_gui" = ["data/*.toml"]
 
 [tool.ruff]
 target-version = "py313"

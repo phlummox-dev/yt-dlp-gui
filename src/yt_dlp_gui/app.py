@@ -1,27 +1,52 @@
+"""
+Main app
+"""
+
+# pylint: disable=missing-function-docstring
+
 import logging
 import os
 import sys
+from pathlib import Path
 
 import toml
-from dep_dl import DownloadWindow
+from platformdirs import (
+    user_log_dir,
+)
 from PySide6 import QtCore as qtc
 from PySide6 import QtWidgets as qtw
-from ui.app_ui import Ui_MainWindow
-from utils import load_toml, root, save_toml
-from worker import Worker
 
-os.environ["PATH"] += os.pathsep + str(root / "bin")
-__version__ = ""
+from . import (
+    dep_dl,
+    utils,
+)
+from .metadata import properties
+
+# we need to import icon resources even if apparently not used --
+# <https://doc.qt.io/qtforpython-6/tutorials/basictutorial/qrcfiles.html>
+from .ui import icons_rc  # noqa: F401 # pylint: disable=unused-import
+from .ui.app_ui import Ui_MainWindow
+from .worker import Worker
+
+app_name = properties.app_name
+version_str = properties.version + " " + properties.commit
+log_dir = Path(user_log_dir(app_name, None))
+log_dir.mkdir(parents=True, exist_ok=True)
+
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s %(levelname)s (%(module)s:%(lineno)d) %(message)s",
     handlers=[
-        logging.FileHandler(root / "debug.log", encoding="utf-8", delay=True),
+        logging.FileHandler(log_dir / "debug.log", encoding="utf-8", delay=True),
         logging.StreamHandler(),
     ],
 )
 logger = logging.getLogger(__name__)
 
+# we need run-time dependency tools - which we might already have
+# downloaded to bin_dir - to be on the PATH
+logger.debug("adding bin_dir '%s' to PATH", dep_dl.bin_dir)
+os.environ["PATH"] += os.pathsep + str(dep_dl.bin_dir)
 
 class MainWindow(qtw.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -30,9 +55,9 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         self.tw.setColumnWidth(0, 200)
         self.le_link.setFocus()
         self.load_config()
-        self.statusBar.showMessage(__version__)
+        self.statusBar.showMessage(version_str)
 
-        self.form = DownloadWindow()
+        self.form = dep_dl.DownloadWindow()
         self.form.finished.connect(self.form.close)
         self.form.finished.connect(self.show)
 
@@ -161,10 +186,10 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         self.to_dl = {}
 
     def load_config(self):
-        config_path = root / "config.toml"
+        config_path = utils.config_file_path
 
         try:
-            self.config = load_toml(config_path)
+            self.config = utils.load_toml()
         except FileNotFoundError:
             qtw.QMessageBox.critical(
                 self,
@@ -198,7 +223,8 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             self.preset["thumbnail"] = self.cb_thumbnail.isChecked()
         if "filename" in self.preset:
             self.preset["filename"] = self.le_filename.text()
-        save_toml(root / "config.toml", self.config)
+
+        utils.save_toml(self.config)
 
         qtw.QMessageBox.information(
             self,
@@ -287,7 +313,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, event):
         self.config["general"]["format"] = self.dd_format.currentIndex()
-        save_toml(root / "config.toml", self.config)
+        utils.save_toml(self.config)
         event.accept()
 
     def update_progress(self, item, emit_data):
@@ -303,8 +329,12 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         except AttributeError:
             logger.info(f"Download ({item.id}) no longer exists")
 
+def main():
+    utils.create_config_if_needed()
+    app = qtw.QApplication(sys.argv)
+    _window = MainWindow()
+    sys.exit(app.exec())
 
 if __name__ == "__main__":
-    app = qtw.QApplication(sys.argv)
-    window = MainWindow()
-    sys.exit(app.exec())
+    main()
+

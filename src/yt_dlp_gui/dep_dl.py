@@ -1,19 +1,30 @@
+"""
+Download tool dependencies, if needed - yt-dlp, ffmpeg, and ffprobe
+"""
+
+# pylint: disable=missing-function-docstring
+
 import os
 import platform
 import shutil
 import stat
 from io import StringIO
+from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 import requests
+from platformdirs import user_data_dir
 from PySide6.QtCore import QThread, QTimer, Signal
 from PySide6.QtWidgets import QWidget
 from tqdm import tqdm
-from ui.download_ui import Ui_Download
-from utils import root
 
-bin_ = root / "bin"
+from .metadata import properties
+from .ui.download_ui import Ui_Download
 
+app_name = properties.app_name
+data_dir = Path(user_data_dir(app_name, None))
+
+bin_dir = data_dir / "bin"
 
 class DownloadWindow(QWidget, Ui_Download):
     finished = Signal()
@@ -55,8 +66,8 @@ class DownloadWindow(QWidget, Ui_Download):
         os_ = platform.system()
 
         if exes:
-            if not os.path.exists(bin_):
-                os.makedirs(bin_)
+            if not os.path.exists(bin_dir):
+                os.makedirs(bin_dir)
             for exe in exes:
                 if exe == "yt-dlp":
                     url = (
@@ -68,7 +79,7 @@ class DownloadWindow(QWidget, Ui_Download):
                         "https://github.com/imageio/imageio-binaries/raw/183aef992339cc5a463528c75dd298db15fd346f/ffmpeg/"
                         + binaries[os_][exe]
                     )
-                filename = os.path.join(bin_, f"{exe}.exe" if os_ == "Windows" else exe)
+                filename = os.path.join(bin_dir, f"{exe}.exe" if os_ == "Windows" else exe)
 
                 self.missing += [[url, filename]]
 
