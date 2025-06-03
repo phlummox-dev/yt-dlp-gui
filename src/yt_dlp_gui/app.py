@@ -1,5 +1,5 @@
 """
-Main app
+Main GUI app
 """
 
 # TODO: clean up pylint warnings, remove pylint disable comments
