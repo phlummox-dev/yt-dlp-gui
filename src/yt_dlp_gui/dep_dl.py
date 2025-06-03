@@ -26,7 +26,12 @@ data_dir = Path(user_data_dir(app_name, None))
 
 bin_dir = data_dir / "bin"
 
+YT_DLP_RELEASES_URL_PREFIX = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/"
+IMAGEIO_URL_PREFIX = "https://github.com/imageio/imageio-binaries/raw/183aef992339cc5a463528c75dd298db15fd346f/ffmpeg/" # pylint: disable="line-too-long"
+
 class DownloadWindow(QWidget, Ui_Download):
+    "download window"
+
     finished = Signal()
 
     def __init__(self):
@@ -71,15 +76,15 @@ class DownloadWindow(QWidget, Ui_Download):
             for exe in exes:
                 if exe == "yt-dlp":
                     url = (
-                        "https://github.com/yt-dlp/yt-dlp/releases/latest/download/"
-                        + binaries[os_][exe]
+                        YT_DLP_RELEASES_URL_PREFIX + binaries[os_][exe]
                     )
                 else:
                     url = (
-                        "https://github.com/imageio/imageio-binaries/raw/183aef992339cc5a463528c75dd298db15fd346f/ffmpeg/"
-                        + binaries[os_][exe]
+                        IMAGEIO_URL_PREFIX + binaries[os_][exe]
                     )
-                filename = os.path.join(bin_dir, f"{exe}.exe" if os_ == "Windows" else exe)
+                filename = os.path.join(bin_dir,
+                                        f"{exe}.exe" if os_ == "Windows" else exe
+                                       )
 
                 self.missing += [[url, filename]]
 
@@ -92,7 +97,7 @@ class DownloadWindow(QWidget, Ui_Download):
         self.downloader.start()
 
     def on_download_finished(self):
-        url, filename = self.missing.pop(0)
+        _url, filename = self.missing.pop(0)
         st = os.stat(filename)
         os.chmod(filename, st.st_mode | stat.S_IEXEC)
 
@@ -107,6 +112,10 @@ class DownloadWindow(QWidget, Ui_Download):
 
 
 class _D_Worker(QThread):
+    """
+    Worker thread for downloading tools
+    """
+
     progress = Signal(int, str)
 
     def __init__(self, url, filename=None):
@@ -117,7 +126,7 @@ class _D_Worker(QThread):
     def run(self):
         if not self.filename:
             self.filename = os.path.basename(self.url)
-        r = requests.get(self.url, stream=True)
+        r = requests.get(self.url, stream=True, timeout=10)
         file_size = int(r.headers.get("content-length", 0))
         scaling_factor = 100 / file_size
         data = StringIO()

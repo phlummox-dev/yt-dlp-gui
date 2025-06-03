@@ -2,6 +2,7 @@
 Main app
 """
 
+# TODO: clean up pylint warnings, remove pylint disable comments
 # pylint: disable=missing-function-docstring
 
 import logging
@@ -49,6 +50,8 @@ logger.debug("adding bin_dir '%s' to PATH", dep_dl.bin_dir)
 os.environ["PATH"] += os.pathsep + str(dep_dl.bin_dir)
 
 class MainWindow(qtw.QMainWindow, Ui_MainWindow):
+    "Main app window"
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)

@@ -1,3 +1,9 @@
+"""
+Worker thread for executing yt-dlp
+"""
+
+# pylint: disable=missing-function-docstring
+
 import json
 import logging
 import shlex
@@ -18,6 +24,8 @@ ETA = 6
 
 
 class Worker(qtc.QThread):
+    "Worker thread for executing yt-dl"
+
     finished = qtc.Signal(int)
     progress = qtc.Signal(object, list)
 
@@ -152,7 +160,8 @@ class Worker(qtc.QThread):
 
         if p.returncode != 0:
             logger.error(
-                f'Download ({self.item.id}) returncode: {p.returncode}\n{"".join(output)}'
+                'Download (%s) returncode: %s\n%s',
+                self.item.id, p.returncode, "".join(output)
             )
             self.progress.emit(
                 self.item,

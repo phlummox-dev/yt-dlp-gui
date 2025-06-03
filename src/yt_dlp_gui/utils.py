@@ -2,6 +2,8 @@
 Manage the config file
 """
 
+# TODO: rename module. "utils" is a silly name
+
 # pylint: disable=missing-function-docstring
 
 import importlib.resources
