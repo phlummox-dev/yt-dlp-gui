@@ -63,3 +63,12 @@ select = [
     "SIM", # flake8-simplify
     "I", # isort
 ]
+
+# we like explicit open modes
+ignore = ["UP015"]
+exclude = [
+    # ignore generated qt files
+    "*_ui.py",
+    "*_rc.py"
+]
+

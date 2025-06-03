@@ -98,7 +98,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
-env/
+env
 venv/
 ENV/
 env.bak/
@@ -132,3 +132,5 @@ debug.log
 .*.swp
 .vscode/
 *.~[0-9]~
+XXX
+typescript

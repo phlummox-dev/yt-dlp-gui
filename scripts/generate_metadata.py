@@ -23,11 +23,13 @@ with open("pyproject.toml", "r", encoding="utf-8") as f:
 
 init_path = os.path.join("src", "yt_dlp_gui", "__init__.py")
 
+# pylint: disable=invalid-name
+
 # metadata properties
 app_name = pyproject.get("project", {}).get("name", "(na)")
 version = pyproject.get("project", {}).get("version", "(na)")
 commit = safe_run(['git', 'rev-parse', '--short', 'HEAD'])
-build_time = f"{datetime.datetime.now(datetime.timezone.utc).isoformat()}Z"
+build_time = f"{datetime.datetime.now(datetime.UTC).isoformat()}Z"
 
 build_host = os.uname().nodename if hasattr(os, 'uname') \
                                  else os.getenv('COMPUTERNAME', '(na)')
@@ -48,4 +50,4 @@ __ci_pipeline__ = "{ci_pipeline}"
 """
 
 with open(init_path, "w", encoding="utf-8") as ofp:
-  ofp.write(init_conts)
+    ofp.write(init_conts)

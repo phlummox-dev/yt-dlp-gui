@@ -29,7 +29,7 @@ typecheck:           #|# Run mypy
 	$(MYPY) scripts/*py src
 
 ruff:                #|# Run ruff check
-	FORCE_COLOR=1 $(RUFF) check .
+	FORCE_COLOR=1 $(RUFF) check scripts src
 
 
 ####
