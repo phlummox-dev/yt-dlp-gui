@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  # ^ needed for creating releases
 
 env:
   QT_QPA_PLATFORM: offscreen
@@ -36,6 +37,10 @@ jobs:
           enable-cache: true
           cache-suffix: ${{ matrix.runtime }}
 
+      - name: Install zip on Windows
+        if: runner.os == 'Windows'
+        run: choco install zip -y
+
       - name: Install dependencies
         run: |
           uv sync --no-dev
@@ -48,31 +53,60 @@ jobs:
           uv run ./scripts/generate_metadata.py
 
       - name: Build application windows
-        if: startsWith(matrix.os, 'windows')
+        if: runner.os == 'Windows'
         run: |
           uv run pyinstaller --clean -y yt-dlp-gui.spec
-          Compress-Archive -Path dist/* -DestinationPath ./yt-dlp-gui-${{ matrix.runtime }}.zip
 
       - name: Build application ubuntu
-        if: startsWith(matrix.os, 'ubuntu')
+        if: runner.os == 'Linux'
         run: |
           make docker-image-build
           make build-linux-exe
 
       - name: Build application macOS
-        if: startsWith(matrix.os, 'mac')
+        if: runner.os == 'macOS'
         run: |
           make build-exe
-          zip -r yt-dlp-gui-${{ matrix.os }}.zip dist/*
 
       - name: Upload artifact ${{ matrix.os }}
         uses: actions/upload-artifact@v4
         with:
           name: yt-dlp-gui-${{ matrix.os }}-Build-${{ github.run_number }}
-          path: ./dist
+          path: ./dist/yt-dlp-gui
 
-      #- name: Upload release ${{ matrix.os }}
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: yt-dlp-gui-${{ matrix.os }}-Build-${{ github.run_number }}.zip
-      #    path: ./app/yt-dlp-gui-${{ matrix.os }}.zip
+      - name: Zip the build
+        shell: bash
+        run: |
+          cd dist
+          zip -r yt-dlp-gui-${{ runner.os }}.zip yt-dlp-gui
+
+      # for version tags only:
+
+      - name: check that baked-in version matches git tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          expected_version="${GITHUB_REF#refs/tags/v}"
+
+          found_version=$(uv run ./scripts/run.py --version | grep '^Version' | awk '{ print $2; }')
+
+          if [[ "$expected_version" != "$found_version" ]]; then
+            printf >&2 'Expected version "%s" differs from found version "%s" - aborting release\n' \
+              "$expected_version" "$found_version"
+            printf >&2 'Suggested fix: bump the version number in pyproject.toml\n'
+            false
+          fi
+
+
+      - name: Create draft release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Version ${{ github.ref_name }}"
+          tag_name: ${{ github.ref }}
+          generate_release_notes: true
+          draft: true
+          prerelease: false
+          files: |
+            dist/yt-dlp-gui*.zip
+          fail_on_unmatched_files: true
