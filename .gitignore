@@ -130,3 +130,4 @@ bin/
 config.toml
 debug.log
 .*.swp
+.vscode/
