@@ -1,19 +1,25 @@
-name: Build
+name: CI/CD
 
+# TODO: allow workflow dispatch to take parameters.
+# e.g. whether to run tests, which platforms to build on.
 on:
-  workflow_dispatch:
-  pull_request:
   push:
     branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
 
 permissions:
   contents: write
   # ^ needed for creating releases
 
-env:
-  QT_QPA_PLATFORM: offscreen
-
 jobs:
+  # TODO: we need tests!
+
   build:
     strategy:
       fail-fast: false
@@ -26,13 +32,12 @@ jobs:
             platform: windows
           - os: macos-latest
             platform: macos
-
     runs-on: ${{ matrix.os }}
-
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.13"
 

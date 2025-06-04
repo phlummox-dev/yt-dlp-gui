@@ -109,6 +109,7 @@ build-exe:           #|# build executable (non-portable if done on Linux)
 clean:               #|# delete Python build artifacts
 	@echo "cleaning..."
 	-rm -rf build dist
+	./scripts/clear-pycache.sh -y
 
 extra-clean:         #|# also delete generated Qt UI files
 extra-clean:
