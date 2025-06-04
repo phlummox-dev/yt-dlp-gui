@@ -2,8 +2,6 @@
 Manage the config file
 """
 
-# TODO: rename module. "utils" is a silly name
-
 import importlib.resources
 import logging
 from pathlib import Path
