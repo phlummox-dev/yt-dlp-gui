@@ -15,7 +15,7 @@ def safe_run(cmd):
     "shell out, but with a default return string"
     try:
         return subprocess.check_output(cmd).decode().strip()
-    except Exception:
+    except subprocess.SubprocessError:
         return "(na)"
 
 with open("pyproject.toml", "r", encoding="utf-8") as f:
