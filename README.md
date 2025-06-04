@@ -21,7 +21,9 @@ This is a ZIP file containing the program files and all necessary dependencies.
 ### Manual
 
 You must have [Python](https://www.python.org/downloads/) 3.10+ and Pip (the
-package installer for Python) installed.
+package manager for Python) installed.
+
+You can clone this repository, and run the program from that directory:
 
 ```bash
 git clone https://github.com/phlummox-dev/yt-dlp-gui
@@ -32,11 +34,24 @@ uv pip install .
 uv run scripts/run.py
 ```
 
+Or if you aren't interested in the code, and already have the Pip package manager installed, you can run
+
+```
+# install the app
+pip install git+https://github.com/phlummox-dev/yt-dlp-gui.git
+# and run it
+yt-dlp-gui
+```
+
 ## Preset Customization
 
-**Note:** all files mentioned below are located in the root directory of the program.
+If you want to create your own presets or modify the existing ones, you're in the right
+place. All customization options can be found in the `config.toml` file. The directory
+where this file is located depends on your platform:
 
-If you want to create your own presets or modify the existing ones, you're in the right place. All customization options can be found in the `config.toml` file.
+- Linux: `/home/`*`username`*`/.config/yt-dlp-gui`
+- macOS:	`/Users/`*`username`*`/Library/Application Support/yt-dlp-gui`
+- Windows: `C:\Users\`*`username`*`\AppData\Local\yt-dlp-gui`
 
 ###  Available Fields
 
@@ -97,3 +112,6 @@ On Fedora or RHEL-based systems, try:
 sudo dnf install xcb-util-cursor
 ```
 
+<!--
+  vim: tw=90 :
+-->

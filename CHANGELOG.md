@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 - Runtime failures from the parent project we forked from:
   https://github.com/ArthurKun21/yt-dlp-gui/issues/5
  
-[0.1.2]: https://github.com/phlummox-dev/yt-dlp-gui/compare/HEAD...main
+[0.1.2]: https://github.com/phlummox-dev/yt-dlp-gui/compare/HEAD...master
 
 <!--
 Template for a new section. Change `[Unreleased]` to e.g. `[1.0.0] - 2025-06-04`
