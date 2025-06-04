@@ -49,6 +49,11 @@ class DownloadWindow(QWidget, Ui_Download):
             QTimer.singleShot(0, self.finished.emit)
 
     def get_missing_dep(self):
+        """
+        Fetch binaries for any runtime dependencies we're
+        missing.
+        """
+
         binaries = {
             "Linux": {
                 "ffmpeg": "ffmpeg-linux64-v4.1",
@@ -89,6 +94,9 @@ class DownloadWindow(QWidget, Ui_Download):
                 self.missing += [[url, filename]]
 
     def download_init(self):
+        """
+        commence a download
+        """
         url, filename = self.missing[0]
         self.downloader = _D_Worker(url, filename)
         self.downloader.progress.connect(self.update_progress)
@@ -97,6 +105,10 @@ class DownloadWindow(QWidget, Ui_Download):
         self.downloader.start()
 
     def on_download_finished(self):
+        """
+        handle a completed download
+        """
+
         _url, filename = self.missing.pop(0)
         st = os.stat(filename)
         os.chmod(filename, st.st_mode | stat.S_IEXEC)
@@ -147,11 +159,11 @@ class _D_Worker(QThread):
                     "{rate_fmt}{postfix}]"
                 ),
                 leave=True,
-            ) as bar,
+            ) as progress_bar,
         ):
             for chunk in r.iter_content(chunk_size=chunk_size):
                 temp.write(chunk)
-                bar.update(chunk_size)
+                progress_bar.update(chunk_size)
                 read_bytes += chunk_size
                 self.progress.emit(
                     read_bytes * scaling_factor, data.getvalue().split("\r")[-1].strip()

@@ -118,7 +118,7 @@ class Worker(qtc.QThread):
         command = self.build_command()
         output = []
         logger.info(
-            f"Download ({self.item.id}) starting with cmd: " + shlex.join(command)
+            "Download (%s) starting with cmd: %s", self.item.id, shlex.join(command)
         )
 
         with sp.Popen(
@@ -138,7 +138,7 @@ class Worker(qtc.QThread):
 
                 if line.startswith("{"):
                     title = json.loads(line)["title"]
-                    logger.debug(f"Download ({self.item.id}) title: {title}")
+                    logger.debug("Download (%s) title: %s", self.item.id, title)
                     self.progress.emit(
                         self.item,
                         [(TITLE, title), (STATUS, "Processing")],

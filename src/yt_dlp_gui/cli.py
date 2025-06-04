@@ -28,6 +28,7 @@ def main():
         sys.exit(0)
 
     # we don't load gui libraries unless actually necessary
+    # ruff: noqa: I001
     from .app import main as gui_main # pylint: disable=import-outside-toplevel
     gui_main()
 

@@ -2,9 +2,6 @@
 Main GUI app
 """
 
-# TODO: clean up pylint warnings, remove pylint disable comments
-# pylint: disable=missing-function-docstring
-
 import logging
 import os
 import sys
@@ -68,15 +65,37 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         self.worker = {}
         self.index = 0
 
+        ## set up widget bindings
+
         self.tb_path.clicked.connect(self.button_path)
+
+        # user has selected a different preset - load it from config
         self.dd_format.currentTextChanged.connect(self.load_preset)
+
+        # user clicked to 'save' the preset
         self.pb_save_preset.clicked.connect(self.save_preset)
+
+        # user clicked to add an item
         self.pb_add.clicked.connect(self.button_add)
+
+        # user clicked to clear an item
         self.pb_clear.clicked.connect(self.button_clear)
+
+        # user clicked to download an item
         self.pb_download.clicked.connect(self.button_download)
+
+        # user clicked to remove an item
         self.tw.itemClicked.connect(self.remove_item)
 
-    def remove_item(self, item, column):
+    def remove_item(self, item, _column):
+        "remove an item from the treeview"
+
+         # pylance claims the .Yes / .No constants don't exist.
+         # But they do according to the pyqt docco - see
+         #   <https://doc.qt.io/qt-6/qmessagebox.html#StandardButton-enum>.
+         # TODO: test to see who's right.
+         # ruff: noqa: E501
+         # cf https://github.com/ArthurKun21/yt-dlp-gui/commit/ad228768121eb3df8c54665268a7aad5d72cc1c2#diff-fc3b1a787c6d94d379c141d039d3d5eb98ba8804720945de123abb50a167006c # pylint: disable=line-too-long
         ret = qtw.QMessageBox.question(
             self,
             "Application Message",
@@ -86,11 +105,11 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         )
         if ret == qtw.QMessageBox.Yes:
             if self.to_dl.get(item.id):
-                logger.debug(f"Removing queued download ({item.id}): {item.text(0)}")
+                logger.debug("Removing queued download (%s): %s", item.id, item.text(0))
                 self.to_dl.pop(item.id)
             elif worker := self.worker.get(item.id):
                 logger.info(
-                    f"Stopping and removing download ({item.id}): {item.text(0)}"
+                    "Stopping and removing download (%s): %s", item.id, item.text(0)
                 )
                 worker.stop()
             self.tw.takeTopLevelItem(self.tw.indexOfTopLevelItem(item))
@@ -154,7 +173,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             self.cb_thumbnail.isChecked(),
             self.cb_subtitles.isChecked(),
         )
-        logger.info(f"Queue download ({item.id}) added: {self.to_dl[self.index]}")
+        logger.info("Queue download (%s) added: %s", item.id, self.to_dl[self.index])
         self.index += 1
 
     def button_clear(self):
@@ -171,6 +190,10 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         self.tw.clear()
 
     def button_download(self):
+        """
+        User clicked to download an item
+        """
+
         if not self.to_dl:
             return qtw.QMessageBox.information(
                 self,
@@ -188,6 +211,11 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         self.to_dl = {}
 
     def load_config(self):
+        """
+        load config from our config file into self.config,
+        populate widgets
+        """
+
         config_path = utils.config_file_path
 
         try:
@@ -213,6 +241,10 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         self.load_preset(self.dd_format.currentText())
 
     def save_preset(self):
+        """
+        User clicked to save a preset -- store it to config file
+        """
+
         if "path" in self.preset:
             self.preset["path"] = self.le_path.text()
         if "sponsorblock" in self.preset:
@@ -235,6 +267,11 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         )
 
     def load_preset(self, fmt):
+        """
+        User has selected a different preset - load the values
+        from our in-mem config into the widgets.
+        """
+
         preset = self.config["presets"].get(fmt)
 
         if not preset:
@@ -264,7 +301,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             self.dd_format.setCurrentIndex(-1)
             return
 
-        logger.debug(f"Changed format to {fmt} preset: {preset}")
+        logger.debug("Changed format to %s preset: %s", fmt, preset)
         self.le_link.setEnabled(True)
         self.gb_controls.setEnabled(True)
 
@@ -314,6 +351,10 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         self.fmt = fmt
 
     def closeEvent(self, event):
+        """
+        Handle app closing - save our config
+        """
+
         self.config["general"]["format"] = self.dd_format.currentIndex()
         utils.save_toml(self.config)
         event.accept()
@@ -329,9 +370,9 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
                     if isinstance(pb, qtw.QProgressBar):
                         pb.setValue(round(float(update.replace("%", ""))))
         except AttributeError:
-            logger.info(f"Download ({item.id}) no longer exists")
+            logger.info("Download (%s) no longer exists", item.id)
 
-def main():
+def main(): # pylint: disable=missing-function-docstring
     utils.create_config_if_needed()
     app = qtw.QApplication(sys.argv)
     _window = MainWindow()
