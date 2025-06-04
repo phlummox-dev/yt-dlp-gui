@@ -1,3 +1,7 @@
+# each preset is for a particular format (e.g. mp3, mp4, "best").
+# we record what the current format is, and the settings for each
+# format.
+
 [general]
 format = 0
 
