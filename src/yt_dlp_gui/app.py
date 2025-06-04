@@ -158,7 +158,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         for i in range(1, 6):
             item.setTextAlignment(i, qtc.Qt.AlignmentFlag.AlignCenter)
 
-        item.id = self.index
+        item.id = self.index # type: ignore
         self.le_link.clear()
 
         self.to_dl[self.index] = Worker(
@@ -173,7 +173,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             self.cb_thumbnail.isChecked(),
             self.cb_subtitles.isChecked(),
         )
-        logger.info("Queue download (%s) added: %s", item.id, self.to_dl[self.index])
+        logger.info("Queue download (%s) added: %s", item.id, self.to_dl[self.index]) # type: ignore
         self.index += 1
 
     def button_clear(self):
