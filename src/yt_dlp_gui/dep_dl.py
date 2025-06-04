@@ -98,7 +98,7 @@ class DownloadWindow(QWidget, Ui_Download):
         commence a download
         """
         url, filename = self.missing[0]
-        self.downloader = _D_Worker(url, filename)
+        self.downloader = DownloadWorker(url, filename)
         self.downloader.progress.connect(self.update_progress)
         self.downloader.finished.connect(self.downloader.deleteLater)
         self.downloader.finished.connect(self.on_download_finished)
@@ -123,7 +123,7 @@ class DownloadWindow(QWidget, Ui_Download):
         self.lb_progress.setText(data)
 
 
-class _D_Worker(QThread):
+class DownloadWorker(QThread):
     """
     Worker thread for downloading tools
     """
