@@ -30,10 +30,10 @@ class Ui_Download(object):
         Download.setWindowIcon(icon)
         self.verticalLayout = QVBoxLayout(Download)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.lb_progress = QLabel(Download)
-        self.lb_progress.setObjectName(u"lb_progress")
+        self.progress_lbl = QLabel(Download)
+        self.progress_lbl.setObjectName(u"progress_lbl")
 
-        self.verticalLayout.addWidget(self.lb_progress, 0, Qt.AlignmentFlag.AlignHCenter)
+        self.verticalLayout.addWidget(self.progress_lbl, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.pb = QProgressBar(Download)
         self.pb.setObjectName(u"pb")
@@ -49,6 +49,6 @@ class Ui_Download(object):
 
     def retranslateUi(self, Download):
         Download.setWindowTitle(QCoreApplication.translate("Download", u"Fetching dependency...", None))
-        self.lb_progress.setText(QCoreApplication.translate("Download", u"?: 0/0 [00:00<?, ?KB/s]", None))
+        self.progress_lbl.setText(QCoreApplication.translate("Download", u"?: 0/0 [00:00<?, ?KB/s]", None))
     # retranslateUi
 

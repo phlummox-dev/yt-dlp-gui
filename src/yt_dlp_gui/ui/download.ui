@@ -22,7 +22,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item alignment="Qt::AlignmentFlag::AlignHCenter">
-    <widget class="QLabel" name="lb_progress">
+    <widget class="QLabel" name="progress_lbl">
      <property name="text">
       <string>?: 0/0 [00:00&lt;?, ?KB/s]</string>
      </property>

@@ -41,32 +41,32 @@ class Ui_MainWindow(object):
         self.gb_controls.setObjectName(u"gb_controls")
         self.verticalLayout_2 = QVBoxLayout(self.gb_controls)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.pb_add = QPushButton(self.gb_controls)
-        self.pb_add.setObjectName(u"pb_add")
+        self.add_btn = QPushButton(self.gb_controls)
+        self.add_btn.setObjectName(u"add_btn")
         icon1 = QIcon()
         icon1.addFile(u":/buttons/add.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.pb_add.setIcon(icon1)
-        self.pb_add.setIconSize(QSize(20, 20))
+        self.add_btn.setIcon(icon1)
+        self.add_btn.setIconSize(QSize(20, 20))
 
-        self.verticalLayout_2.addWidget(self.pb_add)
+        self.verticalLayout_2.addWidget(self.add_btn)
 
-        self.pb_clear = QPushButton(self.gb_controls)
-        self.pb_clear.setObjectName(u"pb_clear")
+        self.clear_btn = QPushButton(self.gb_controls)
+        self.clear_btn.setObjectName(u"clear_btn")
         icon2 = QIcon()
         icon2.addFile(u":/buttons/clear.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.pb_clear.setIcon(icon2)
-        self.pb_clear.setIconSize(QSize(20, 20))
+        self.clear_btn.setIcon(icon2)
+        self.clear_btn.setIconSize(QSize(20, 20))
 
-        self.verticalLayout_2.addWidget(self.pb_clear)
+        self.verticalLayout_2.addWidget(self.clear_btn)
 
-        self.pb_download = QPushButton(self.gb_controls)
-        self.pb_download.setObjectName(u"pb_download")
+        self.download_btn = QPushButton(self.gb_controls)
+        self.download_btn.setObjectName(u"download_btn")
         icon3 = QIcon()
         icon3.addFile(u":/buttons/download.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.pb_download.setIcon(icon3)
-        self.pb_download.setIconSize(QSize(20, 20))
+        self.download_btn.setIcon(icon3)
+        self.download_btn.setIconSize(QSize(20, 20))
 
-        self.verticalLayout_2.addWidget(self.pb_download)
+        self.verticalLayout_2.addWidget(self.download_btn)
 
 
         self.gridLayout.addWidget(self.gb_controls, 0, 2, 1, 1)
@@ -85,31 +85,31 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.label)
 
-        self.dd_sponsorblock = QComboBox(self.gb_embeds)
-        self.dd_sponsorblock.addItem("")
-        self.dd_sponsorblock.addItem("")
-        self.dd_sponsorblock.addItem("")
-        self.dd_sponsorblock.setObjectName(u"dd_sponsorblock")
+        self.sponsorblock_combo = QComboBox(self.gb_embeds)
+        self.sponsorblock_combo.addItem("")
+        self.sponsorblock_combo.addItem("")
+        self.sponsorblock_combo.addItem("")
+        self.sponsorblock_combo.setObjectName(u"sponsorblock_combo")
 
-        self.horizontalLayout.addWidget(self.dd_sponsorblock)
+        self.horizontalLayout.addWidget(self.sponsorblock_combo)
 
 
         self.verticalLayout_3.addLayout(self.horizontalLayout)
 
-        self.cb_metadata = QCheckBox(self.gb_embeds)
-        self.cb_metadata.setObjectName(u"cb_metadata")
+        self.metadata_check = QCheckBox(self.gb_embeds)
+        self.metadata_check.setObjectName(u"metadata_check")
 
-        self.verticalLayout_3.addWidget(self.cb_metadata)
+        self.verticalLayout_3.addWidget(self.metadata_check)
 
-        self.cb_thumbnail = QCheckBox(self.gb_embeds)
-        self.cb_thumbnail.setObjectName(u"cb_thumbnail")
+        self.thumbnail_check = QCheckBox(self.gb_embeds)
+        self.thumbnail_check.setObjectName(u"thumbnail_check")
 
-        self.verticalLayout_3.addWidget(self.cb_thumbnail)
+        self.verticalLayout_3.addWidget(self.thumbnail_check)
 
-        self.cb_subtitles = QCheckBox(self.gb_embeds)
-        self.cb_subtitles.setObjectName(u"cb_subtitles")
+        self.subtitles_check = QCheckBox(self.gb_embeds)
+        self.subtitles_check.setObjectName(u"subtitles_check")
 
-        self.verticalLayout_3.addWidget(self.cb_subtitles)
+        self.verticalLayout_3.addWidget(self.subtitles_check)
 
 
         self.gridLayout.addWidget(self.gb_embeds, 0, 1, 1, 1)
@@ -139,72 +139,72 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.lb_link = QLabel(self.gb_params)
-        self.lb_link.setObjectName(u"lb_link")
-        self.lb_link.setMinimumSize(QSize(0, 0))
+        self.link_lbl = QLabel(self.gb_params)
+        self.link_lbl.setObjectName(u"link_lbl")
+        self.link_lbl.setMinimumSize(QSize(0, 0))
 
-        self.horizontalLayout_4.addWidget(self.lb_link)
+        self.horizontalLayout_4.addWidget(self.link_lbl)
 
-        self.le_link = QLineEdit(self.gb_params)
-        self.le_link.setObjectName(u"le_link")
-        self.le_link.setClearButtonEnabled(True)
+        self.link_edit = QLineEdit(self.gb_params)
+        self.link_edit.setObjectName(u"link_edit")
+        self.link_edit.setClearButtonEnabled(True)
 
-        self.horizontalLayout_4.addWidget(self.le_link)
+        self.horizontalLayout_4.addWidget(self.link_edit)
 
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_4)
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.lb_path = QLabel(self.gb_params)
-        self.lb_path.setObjectName(u"lb_path")
-        self.lb_path.setMinimumSize(QSize(0, 0))
+        self.path_lbl = QLabel(self.gb_params)
+        self.path_lbl.setObjectName(u"path_lbl")
+        self.path_lbl.setMinimumSize(QSize(0, 0))
 
-        self.horizontalLayout_3.addWidget(self.lb_path)
+        self.horizontalLayout_3.addWidget(self.path_lbl)
 
-        self.le_path = QLineEdit(self.gb_params)
-        self.le_path.setObjectName(u"le_path")
-        self.le_path.setEnabled(True)
-        self.le_path.setReadOnly(True)
+        self.path_edit = QLineEdit(self.gb_params)
+        self.path_edit.setObjectName(u"path_edit")
+        self.path_edit.setEnabled(True)
+        self.path_edit.setReadOnly(True)
 
-        self.horizontalLayout_3.addWidget(self.le_path)
+        self.horizontalLayout_3.addWidget(self.path_edit)
 
-        self.tb_path = QToolButton(self.gb_params)
-        self.tb_path.setObjectName(u"tb_path")
+        self.path_btn = QToolButton(self.gb_params)
+        self.path_btn.setObjectName(u"path_btn")
 
-        self.horizontalLayout_3.addWidget(self.tb_path)
+        self.horizontalLayout_3.addWidget(self.path_btn)
 
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_3)
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.lb_format = QLabel(self.gb_params)
-        self.lb_format.setObjectName(u"lb_format")
-        self.lb_format.setMinimumSize(QSize(0, 0))
+        self.format_lbl = QLabel(self.gb_params)
+        self.format_lbl.setObjectName(u"format_lbl")
+        self.format_lbl.setMinimumSize(QSize(0, 0))
 
-        self.horizontalLayout_2.addWidget(self.lb_format)
+        self.horizontalLayout_2.addWidget(self.format_lbl)
 
-        self.dd_format = QComboBox(self.gb_params)
-        self.dd_format.setObjectName(u"dd_format")
+        self.format_combo = QComboBox(self.gb_params)
+        self.format_combo.setObjectName(u"format_combo")
 
-        self.horizontalLayout_2.addWidget(self.dd_format)
+        self.horizontalLayout_2.addWidget(self.format_combo)
 
-        self.pb_save_preset = QPushButton(self.gb_params)
-        self.pb_save_preset.setObjectName(u"pb_save_preset")
+        self.save_preset_btn = QPushButton(self.gb_params)
+        self.save_preset_btn.setObjectName(u"save_preset_btn")
 
-        self.horizontalLayout_2.addWidget(self.pb_save_preset)
+        self.horizontalLayout_2.addWidget(self.save_preset_btn)
 
-        self.lb_filename = QLabel(self.gb_params)
-        self.lb_filename.setObjectName(u"lb_filename")
+        self.filename_lbl = QLabel(self.gb_params)
+        self.filename_lbl.setObjectName(u"filename_lbl")
 
-        self.horizontalLayout_2.addWidget(self.lb_filename)
+        self.horizontalLayout_2.addWidget(self.filename_lbl)
 
-        self.le_filename = QLineEdit(self.gb_params)
-        self.le_filename.setObjectName(u"le_filename")
-        self.le_filename.setClearButtonEnabled(False)
+        self.filename_edit = QLineEdit(self.gb_params)
+        self.filename_edit.setObjectName(u"filename_edit")
+        self.filename_edit.setClearButtonEnabled(False)
 
-        self.horizontalLayout_2.addWidget(self.le_filename)
+        self.horizontalLayout_2.addWidget(self.filename_edit)
 
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
@@ -218,9 +218,9 @@ class Ui_MainWindow(object):
         self.statusBar = QStatusBar(MainWindow)
         self.statusBar.setObjectName(u"statusBar")
         MainWindow.setStatusBar(self.statusBar)
-        QWidget.setTabOrder(self.pb_add, self.pb_clear)
-        QWidget.setTabOrder(self.pb_clear, self.pb_download)
-        QWidget.setTabOrder(self.pb_download, self.tw)
+        QWidget.setTabOrder(self.add_btn, self.clear_btn)
+        QWidget.setTabOrder(self.clear_btn, self.download_btn)
+        QWidget.setTabOrder(self.download_btn, self.tw)
 
         self.retranslateUi(MainWindow)
 
@@ -231,26 +231,26 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"yt-dlp-gui", None))
         self.gb_controls.setTitle(QCoreApplication.translate("MainWindow", u"Controls", None))
 #if QT_CONFIG(tooltip)
-        self.pb_add.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Add</p></body></html>", None))
+        self.add_btn.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Add</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.pb_add.setText("")
+        self.add_btn.setText("")
 #if QT_CONFIG(tooltip)
-        self.pb_clear.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Clear</p></body></html>", None))
+        self.clear_btn.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Clear</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.pb_clear.setText("")
+        self.clear_btn.setText("")
 #if QT_CONFIG(tooltip)
-        self.pb_download.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Download</p></body></html>", None))
+        self.download_btn.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Download</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.pb_download.setText("")
+        self.download_btn.setText("")
         self.gb_embeds.setTitle(QCoreApplication.translate("MainWindow", u"Optional", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"SponsorBlock", None))
-        self.dd_sponsorblock.setItemText(0, "")
-        self.dd_sponsorblock.setItemText(1, QCoreApplication.translate("MainWindow", u"remove", None))
-        self.dd_sponsorblock.setItemText(2, QCoreApplication.translate("MainWindow", u"mark", None))
+        self.sponsorblock_combo.setItemText(0, "")
+        self.sponsorblock_combo.setItemText(1, QCoreApplication.translate("MainWindow", u"remove", None))
+        self.sponsorblock_combo.setItemText(2, QCoreApplication.translate("MainWindow", u"mark", None))
 
-        self.cb_metadata.setText(QCoreApplication.translate("MainWindow", u"Metadata", None))
-        self.cb_thumbnail.setText(QCoreApplication.translate("MainWindow", u"Thumbnail", None))
-        self.cb_subtitles.setText(QCoreApplication.translate("MainWindow", u"Subtitles", None))
+        self.metadata_check.setText(QCoreApplication.translate("MainWindow", u"Metadata", None))
+        self.thumbnail_check.setText(QCoreApplication.translate("MainWindow", u"Thumbnail", None))
+        self.subtitles_check.setText(QCoreApplication.translate("MainWindow", u"Subtitles", None))
         self.gb_status.setTitle(QCoreApplication.translate("MainWindow", u"Downloads", None))
         ___qtreewidgetitem = self.tw.headerItem()
         ___qtreewidgetitem.setText(6, QCoreApplication.translate("MainWindow", u"ETA", None));
@@ -261,13 +261,13 @@ class Ui_MainWindow(object):
         ___qtreewidgetitem.setText(1, QCoreApplication.translate("MainWindow", u"Format", None));
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"Title", None));
         self.gb_params.setTitle(QCoreApplication.translate("MainWindow", u"Parameters", None))
-        self.lb_link.setText(QCoreApplication.translate("MainWindow", u"Link", None))
-        self.le_link.setPlaceholderText(QCoreApplication.translate("MainWindow", u"https://www.youtube.com/watch?v=dQw4w9WgXcQ", None))
-        self.lb_path.setText(QCoreApplication.translate("MainWindow", u"Path", None))
-        self.tb_path.setText(QCoreApplication.translate("MainWindow", u"...", None))
-        self.lb_format.setText(QCoreApplication.translate("MainWindow", u"Format", None))
-        self.pb_save_preset.setText(QCoreApplication.translate("MainWindow", u"Save Preset", None))
-        self.lb_filename.setText(QCoreApplication.translate("MainWindow", u"Filename", None))
-        self.le_filename.setPlaceholderText(QCoreApplication.translate("MainWindow", u"%(title)s.%(ext)s", None))
+        self.link_lbl.setText(QCoreApplication.translate("MainWindow", u"Link", None))
+        self.link_edit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"https://www.youtube.com/watch?v=dQw4w9WgXcQ", None))
+        self.path_lbl.setText(QCoreApplication.translate("MainWindow", u"Path", None))
+        self.path_btn.setText(QCoreApplication.translate("MainWindow", u"...", None))
+        self.format_lbl.setText(QCoreApplication.translate("MainWindow", u"Format", None))
+        self.save_preset_btn.setText(QCoreApplication.translate("MainWindow", u"Save Preset", None))
+        self.filename_lbl.setText(QCoreApplication.translate("MainWindow", u"Filename", None))
+        self.filename_edit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"%(title)s.%(ext)s", None))
     # retranslateUi
 

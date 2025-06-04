@@ -31,7 +31,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QPushButton" name="pb_add">
+        <widget class="QPushButton" name="add_btn">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -51,7 +51,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pb_clear">
+        <widget class="QPushButton" name="clear_btn">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -71,7 +71,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pb_download">
+        <widget class="QPushButton" name="download_btn">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -118,7 +118,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="dd_sponsorblock">
+          <widget class="QComboBox" name="sponsorblock_combo">
            <item>
             <property name="text">
              <string/>
@@ -139,21 +139,21 @@
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="cb_metadata">
+        <widget class="QCheckBox" name="metadata_check">
          <property name="text">
           <string>Metadata</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="cb_thumbnail">
+        <widget class="QCheckBox" name="thumbnail_check">
          <property name="text">
           <string>Thumbnail</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="cb_subtitles">
+        <widget class="QCheckBox" name="subtitles_check">
          <property name="text">
           <string>Subtitles</string>
          </property>
@@ -234,7 +234,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QLabel" name="lb_link">
+          <widget class="QLabel" name="link_lbl">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -247,7 +247,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="le_link">
+          <widget class="QLineEdit" name="link_edit">
            <property name="placeholderText">
             <string>https://www.youtube.com/watch?v=dQw4w9WgXcQ</string>
            </property>
@@ -261,7 +261,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QLabel" name="lb_path">
+          <widget class="QLabel" name="path_lbl">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -274,7 +274,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="le_path">
+          <widget class="QLineEdit" name="path_edit">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -284,7 +284,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="tb_path">
+          <widget class="QToolButton" name="path_btn">
            <property name="text">
             <string>...</string>
            </property>
@@ -295,7 +295,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QLabel" name="lb_format">
+          <widget class="QLabel" name="format_lbl">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -308,24 +308,24 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="dd_format"/>
+          <widget class="QComboBox" name="format_combo"/>
          </item>
          <item>
-          <widget class="QPushButton" name="pb_save_preset">
+          <widget class="QPushButton" name="save_preset_btn">
            <property name="text">
             <string>Save Preset</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="lb_filename">
+          <widget class="QLabel" name="filename_lbl">
            <property name="text">
             <string>Filename</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="le_filename">
+          <widget class="QLineEdit" name="filename_edit">
            <property name="placeholderText">
             <string>%(title)s.%(ext)s</string>
            </property>
@@ -344,9 +344,9 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <tabstops>
-  <tabstop>pb_add</tabstop>
-  <tabstop>pb_clear</tabstop>
-  <tabstop>pb_download</tabstop>
+  <tabstop>add_btn</tabstop>
+  <tabstop>clear_btn</tabstop>
+  <tabstop>download_btn</tabstop>
   <tabstop>tw</tabstop>
  </tabstops>
  <resources>

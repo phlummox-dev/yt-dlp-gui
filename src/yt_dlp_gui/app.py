@@ -53,7 +53,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.tw.setColumnWidth(0, 200)
-        self.le_link.setFocus()
+        self.link_edit.setFocus()
         self.load_config()
         self.statusBar.showMessage(version_str)
 
@@ -67,22 +67,22 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
 
         ## set up widget bindings
 
-        self.tb_path.clicked.connect(self.button_path)
+        self.path_btn.clicked.connect(self.button_path)
 
         # user has selected a different preset - load it from config
-        self.dd_format.currentTextChanged.connect(self.load_preset)
+        self.format_combo.currentTextChanged.connect(self.load_preset)
 
         # user clicked to 'save' the preset
-        self.pb_save_preset.clicked.connect(self.save_preset)
+        self.save_preset_btn.clicked.connect(self.save_preset)
 
         # user clicked to add an item
-        self.pb_add.clicked.connect(self.button_add)
+        self.add_btn.clicked.connect(self.button_add)
 
         # user clicked to clear an item
-        self.pb_clear.clicked.connect(self.button_clear)
+        self.clear_btn.clicked.connect(self.button_clear)
 
         # user clicked to download an item
-        self.pb_download.clicked.connect(self.button_download)
+        self.download_btn.clicked.connect(self.button_download)
 
         # user clicked to remove an item
         self.tw.itemClicked.connect(self.remove_item)
@@ -118,18 +118,18 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         path = qtw.QFileDialog.getExistingDirectory(
             self,
             "Select a folder",
-            self.le_path.text() or qtc.QDir.homePath(),
+            self.path_edit.text() or qtc.QDir.homePath(),
             qtw.QFileDialog.Option.ShowDirsOnly,
         )
 
         if path:
-            self.le_path.setText(path)
+            self.path_edit.setText(path)
 
     def button_add(self):
         missing = {}
-        link = self.le_link.text()
-        path = self.le_path.text()
-        filename = self.le_filename.text()
+        link = self.link_edit.text()
+        path = self.path_edit.text()
+        filename = self.filename_edit.text()
 
         if not link:
             missing["Link"] = link
@@ -159,7 +159,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             item.setTextAlignment(i, qtc.Qt.AlignmentFlag.AlignCenter)
 
         item.id = self.index # type: ignore
-        self.le_link.clear()
+        self.link_edit.clear()
 
         self.to_dl[self.index] = Worker(
             item,
@@ -168,10 +168,10 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             path,
             filename,
             self.fmt,
-            self.dd_sponsorblock.currentText(),
-            self.cb_metadata.isChecked(),
-            self.cb_thumbnail.isChecked(),
-            self.cb_subtitles.isChecked(),
+            self.sponsorblock_combo.currentText(),
+            self.metadata_check.isChecked(),
+            self.thumbnail_check.isChecked(),
+            self.subtitles_check.isChecked(),
         )
         logger.info("Queue download (%s) added: %s", item.id, self.to_dl[self.index]) # type: ignore
         self.index += 1
@@ -236,9 +236,9 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             logger.error("Config file TOML decoding failed", exc_info=True)
             qtw.QApplication.exit()
 
-        self.dd_format.addItems(self.config["presets"].keys())
-        self.dd_format.setCurrentIndex(self.config["general"]["format"])
-        self.load_preset(self.dd_format.currentText())
+        self.format_combo.addItems(self.config["presets"].keys())
+        self.format_combo.setCurrentIndex(self.config["general"]["format"])
+        self.load_preset(self.format_combo.currentText())
 
     def save_preset(self):
         """
@@ -246,17 +246,17 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         """
 
         if "path" in self.preset:
-            self.preset["path"] = self.le_path.text()
+            self.preset["path"] = self.path_edit.text()
         if "sponsorblock" in self.preset:
-            self.preset["sponsorblock"] = self.dd_sponsorblock.currentIndex()
+            self.preset["sponsorblock"] = self.sponsorblock_combo.currentIndex()
         if "metadata" in self.preset:
-            self.preset["metadata"] = self.cb_metadata.isChecked()
+            self.preset["metadata"] = self.metadata_check.isChecked()
         if "subtitles" in self.preset:
-            self.preset["subtitles"] = self.cb_subtitles.isChecked()
+            self.preset["subtitles"] = self.subtitles_check.isChecked()
         if "thumbnail" in self.preset:
-            self.preset["thumbnail"] = self.cb_thumbnail.isChecked()
+            self.preset["thumbnail"] = self.thumbnail_check.isChecked()
         if "filename" in self.preset:
-            self.preset["filename"] = self.le_filename.text()
+            self.preset["filename"] = self.filename_edit.text()
 
         config.save_toml(self.config)
 
@@ -275,19 +275,19 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         preset = self.config["presets"].get(fmt)
 
         if not preset:
-            self.le_path.clear()
-            self.tb_path.setEnabled(False)
-            self.dd_sponsorblock.setCurrentIndex(-1)
-            self.dd_sponsorblock.setEnabled(False)
-            self.cb_metadata.setChecked(False)
-            self.cb_metadata.setEnabled(False)
-            self.cb_subtitles.setChecked(False)
-            self.cb_subtitles.setEnabled(False)
-            self.cb_thumbnail.setChecked(False)
-            self.cb_thumbnail.setEnabled(False)
-            self.le_filename.clear()
-            self.le_filename.setEnabled(False)
-            self.le_link.setEnabled(False)
+            self.path_edit.clear()
+            self.path_btn.setEnabled(False)
+            self.sponsorblock_combo.setCurrentIndex(-1)
+            self.sponsorblock_combo.setEnabled(False)
+            self.metadata_check.setChecked(False)
+            self.metadata_check.setEnabled(False)
+            self.subtitles_check.setChecked(False)
+            self.subtitles_check.setEnabled(False)
+            self.thumbnail_check.setChecked(False)
+            self.thumbnail_check.setEnabled(False)
+            self.filename_edit.clear()
+            self.filename_edit.setEnabled(False)
+            self.link_edit.setEnabled(False)
             self.gb_controls.setEnabled(False)
             return
 
@@ -298,54 +298,54 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
                 "The args key does not exist in the current preset and "
                 "therefore it cannot be used.",
             )
-            self.dd_format.setCurrentIndex(-1)
+            self.format_combo.setCurrentIndex(-1)
             return
 
         logger.debug("Changed format to %s preset: %s", fmt, preset)
-        self.le_link.setEnabled(True)
+        self.link_edit.setEnabled(True)
         self.gb_controls.setEnabled(True)
 
         if "path" in preset:
-            self.tb_path.setEnabled(True)
-            self.le_path.setText(preset["path"])
+            self.path_btn.setEnabled(True)
+            self.path_edit.setText(preset["path"])
         else:
-            self.le_path.clear()
-            self.tb_path.setEnabled(False)
+            self.path_edit.clear()
+            self.path_btn.setEnabled(False)
 
         if "sponsorblock" in preset:
-            self.dd_sponsorblock.setEnabled(True)
-            self.dd_sponsorblock.setCurrentIndex(preset["sponsorblock"])
+            self.sponsorblock_combo.setEnabled(True)
+            self.sponsorblock_combo.setCurrentIndex(preset["sponsorblock"])
         else:
-            self.dd_sponsorblock.setCurrentIndex(-1)
-            self.dd_sponsorblock.setEnabled(False)
+            self.sponsorblock_combo.setCurrentIndex(-1)
+            self.sponsorblock_combo.setEnabled(False)
 
         if "metadata" in preset:
-            self.cb_metadata.setEnabled(True)
-            self.cb_metadata.setChecked(preset["metadata"])
+            self.metadata_check.setEnabled(True)
+            self.metadata_check.setChecked(preset["metadata"])
         else:
-            self.cb_metadata.setChecked(False)
-            self.cb_metadata.setEnabled(False)
+            self.metadata_check.setChecked(False)
+            self.metadata_check.setEnabled(False)
 
         if "subtitles" in preset:
-            self.cb_subtitles.setEnabled(True)
-            self.cb_subtitles.setChecked(preset["subtitles"])
+            self.subtitles_check.setEnabled(True)
+            self.subtitles_check.setChecked(preset["subtitles"])
         else:
-            self.cb_subtitles.setChecked(False)
-            self.cb_subtitles.setEnabled(False)
+            self.subtitles_check.setChecked(False)
+            self.subtitles_check.setEnabled(False)
 
         if "thumbnail" in preset:
-            self.cb_thumbnail.setEnabled(True)
-            self.cb_thumbnail.setChecked(preset["thumbnail"])
+            self.thumbnail_check.setEnabled(True)
+            self.thumbnail_check.setChecked(preset["thumbnail"])
         else:
-            self.cb_thumbnail.setChecked(False)
-            self.cb_thumbnail.setEnabled(False)
+            self.thumbnail_check.setChecked(False)
+            self.thumbnail_check.setEnabled(False)
 
         if "filename" in preset:
-            self.le_filename.setEnabled(True)
-            self.le_filename.setText(preset["filename"])
+            self.filename_edit.setEnabled(True)
+            self.filename_edit.setText(preset["filename"])
         else:
-            self.le_filename.clear()
-            self.le_filename.setEnabled(False)
+            self.filename_edit.clear()
+            self.filename_edit.setEnabled(False)
 
         self.preset = preset
         self.fmt = fmt
@@ -355,7 +355,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         Handle app closing - save our config
         """
 
-        self.config["general"]["format"] = self.dd_format.currentIndex()
+        self.config["general"]["format"] = self.format_combo.currentIndex()
         config.save_toml(self.config)
         event.accept()
 

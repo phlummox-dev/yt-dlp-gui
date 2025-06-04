@@ -120,7 +120,7 @@ class DownloadWindow(QWidget, Ui_Download):
 
     def update_progress(self, progress, data):
         self.pb.setValue(progress)
-        self.lb_progress.setText(data)
+        self.progress_lbl.setText(data)
 
 
 class DownloadWorker(QThread):
