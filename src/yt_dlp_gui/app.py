@@ -15,8 +15,8 @@ from PySide6 import QtCore as qtc
 from PySide6 import QtWidgets as qtw
 
 from . import (
+    config,
     dep_dl,
-    utils,
 )
 from .metadata import properties
 
@@ -216,10 +216,10 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         populate widgets
         """
 
-        config_path = utils.config_file_path
+        config_path = config.config_file_path
 
         try:
-            self.config = utils.load_toml()
+            self.config = config.load_toml()
         except FileNotFoundError:
             qtw.QMessageBox.critical(
                 self,
@@ -258,7 +258,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         if "filename" in self.preset:
             self.preset["filename"] = self.le_filename.text()
 
-        utils.save_toml(self.config)
+        config.save_toml(self.config)
 
         qtw.QMessageBox.information(
             self,
@@ -356,7 +356,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         """
 
         self.config["general"]["format"] = self.dd_format.currentIndex()
-        utils.save_toml(self.config)
+        config.save_toml(self.config)
         event.accept()
 
     def update_progress(self, item, emit_data):
@@ -373,7 +373,7 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
             logger.info("Download (%s) no longer exists", item.id)
 
 def main(): # pylint: disable=missing-function-docstring
-    utils.create_config_if_needed()
+    config.create_config_if_needed()
     app = qtw.QApplication(sys.argv)
     _window = MainWindow()
     sys.exit(app.exec())
