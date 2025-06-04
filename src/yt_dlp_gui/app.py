@@ -136,10 +136,9 @@ class MainWindow(qtw.QMainWindow, Ui_MainWindow):
         pb.setStyleSheet("QProgressBar { margin-bottom: 3px; }")
         pb.setTextVisible(False)
         self.tw.setItemWidget(item, 3, pb)
-        [
+        for i in range(1, 6):
             item.setTextAlignment(i, qtc.Qt.AlignmentFlag.AlignCenter)
-            for i in range(1, 6)
-        ]
+
         item.id = self.index
         self.le_link.clear()
 
