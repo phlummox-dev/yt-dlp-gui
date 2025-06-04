@@ -18,10 +18,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        # 'platform' is just a convenience name.
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: windows
+          - os: macos-latest
+            platform: macos
 
     runs-on: ${{ matrix.os }}
-
 
     steps:
       - uses: actions/checkout@v4
@@ -52,33 +58,56 @@ jobs:
           # but no harm doing it twice.
           uv run ./scripts/generate_metadata.py
 
+      - name: extract version
+        id: get_version
+        shell: bash
+        run: |
+          found_version=$(uv run ./scripts/run.py --version | grep '^Version' | awk '{ print $2; }')
+          echo "version=$found_version" >> "$GITHUB_OUTPUT"
+
+      # windows build
+      # builds an exe at dist/yt-dlp-gui.exe
       - name: Build application windows
+        shell: bash
         if: runner.os == 'Windows'
         run: |
-          uv run pyinstaller --clean -y yt-dlp-gui.spec
+          set -x
+          make build-exe
+          version="${{ steps.get_version.outputs.version }}"
+          mv dist/yt-dlp-gui.exe dist/yt-dlp-gui-"${version}"-win.exe
 
+      # linux build
+      # builds a "onedir" version - a dir at dist/yt-dlp-gui
+      # TODO: cache/store the built docker image
+      # TODO: bundle the directory up into an AppImage
       - name: Build application ubuntu
         if: runner.os == 'Linux'
         run: |
+          set -x
           make docker-image-build
           make build-linux-exe
+          version="${{ steps.get_version.outputs.version }}"
+          cd dist
+          zip -r yt-dlp-gui-"${version}"-linux.zip yt-dlp-gui
 
+      # mac build
+      # builds an app "bundle" dir, at dist/yt-dlp-gui.app
+      # we zip it up into dist/yt-dlp-gui.app.zip
       - name: Build application macOS
         if: runner.os == 'macOS'
         run: |
+          set -x
           make build-exe
+          version="${{ steps.get_version.outputs.version }}"
+          cd dist
+          zip -r yt-dlp-gui-"${version}"-mac.zip yt-dlp-gui.app 
 
       - name: Upload artifact ${{ matrix.os }}
         uses: actions/upload-artifact@v4
         with:
           name: yt-dlp-gui-${{ matrix.os }}-Build-${{ github.run_number }}
-          path: ./dist/yt-dlp-gui
-
-      - name: Zip the build
-        shell: bash
-        run: |
-          cd dist
-          zip -r yt-dlp-gui-${{ runner.os }}.zip yt-dlp-gui
+          path: |
+            dist
 
       # for version tags only:
 
@@ -98,8 +127,32 @@ jobs:
           fi
 
 
-      - name: Create draft release
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Create draft release - Windows binary
+        if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Version ${{ github.ref_name }}"
+          tag_name: ${{ github.ref }}
+          generate_release_notes: true
+          draft: true
+          prerelease: false
+          fail_on_unmatched_files: true
+          files: dist/yt-dlp-gui*.exe
+      
+      - name: Create draft release - macOS app bundle
+        if: runner.os == 'macOS'  && startsWith(github.ref, 'refs/tags/v') 
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Version ${{ github.ref_name }}"
+          tag_name: ${{ github.ref }}
+          generate_release_notes: true
+          draft: true
+          prerelease: false
+          fail_on_unmatched_files: true
+          files: dist/yt-dlp-gui*.zip
+      
+      - name: Create draft release - Linux zip
+        if: runner.os == 'Linux'  && startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           name: "Version ${{ github.ref_name }}"
@@ -110,3 +163,5 @@ jobs:
           files: |
             dist/yt-dlp-gui*.zip
           fail_on_unmatched_files: true
+
+      
